@@ -1,0 +1,14 @@
+[Unit]
+Description=home-cnc agent (halt/lock on command)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# Runs as root: `systemctl poweroff` and `loginctl lock-sessions` both need it.
+ExecStart=/usr/local/bin/cnc-agent -config /etc/home-cnc/agent.json
+Restart=always
+RestartSec=5
+# Config file holds the device token; keep it root-only (chmod 600).
+
+[Install]
+WantedBy=multi-user.target

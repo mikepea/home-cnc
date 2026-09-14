@@ -1,0 +1,13 @@
+{
+  "name": "home-cnc",
+  "short_name": "home-cnc",
+  "description": "Halt or lock your home devices",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "icons": [
+    { "src": "/static/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

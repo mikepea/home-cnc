@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>home-cnc</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0b1220">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <h1 class="brand">home&#8209;cnc</h1>
+      <form method="post" action="/logout"><button class="btn ghost">Sign out</button></form>
+    </header>
+
+    {{if .NewToken}}
+    <section class="card token">
+      <h2>Device &ldquo;{{.NewDevice}}&rdquo; created</h2>
+      <p>Copy this token into the agent config now &mdash; it is shown only once.</p>
+      <pre class="mono selectable">{{.NewToken}}</pre>
+      <details>
+        <summary>agent.json</summary>
+<pre class="mono selectable">{
+  "server_url": "{{.ServerURL}}",
+  "token": "{{.NewToken}}",
+  "public_key": "{{.PublicKey}}"
+}</pre>
+      </details>
+    </section>
+    {{end}}
+
+    <section class="devices">
+      {{range .Devices}}
+      <article class="card device">
+        <div class="device-head">
+          <h2>{{.Name}} <span class="os">{{.OS}}</span></h2>
+          <span class="dot {{if .Online}}on{{else}}off{{end}}" title="last seen {{.LastSeenHuman}}"></span>
+        </div>
+        <p class="meta">last seen {{.LastSeenHuman}}{{if .LastIP}} &middot; {{.LastIP}}{{end}}</p>
+
+        <div class="actions">
+          <form method="post" action="/devices/{{.ID}}/command">
+            <input type="hidden" name="csrf" value="{{$.CSRF}}">
+            <input type="hidden" name="type" value="lock">
+            <button class="btn primary">Lock</button>
+          </form>
+          <form method="post" action="/devices/{{.ID}}/command" onsubmit="return confirm('Halt {{.Name}} now? This powers the machine off.');">
+            <input type="hidden" name="csrf" value="{{$.CSRF}}">
+            <input type="hidden" name="type" value="halt">
+            <button class="btn danger">Halt</button>
+          </form>
+          <form method="post" action="/devices/{{.ID}}/delete" class="right" onsubmit="return confirm('Remove {{.Name}} and revoke its token?');">
+            <input type="hidden" name="csrf" value="{{$.CSRF}}">
+            <button class="btn ghost small">Remove</button>
+          </form>
+        </div>
+
+        {{if .Recent}}
+        <ul class="log">
+          {{range .Recent}}
+          <li><span class="badge {{.Status}}">{{.Status}}</span> {{.Type}} <time>{{.CreatedAt.Format "Jan 2 15:04"}}</time>{{if .Result}} &mdash; <span class="result">{{.Result}}</span>{{end}}</li>
+          {{end}}
+        </ul>
+        {{end}}
+      </article>
+      {{else}}
+      <p class="empty">No devices yet. Add one below, then install the agent with the token it gives you.</p>
+      {{end}}
+    </section>
+
+    <section class="card">
+      <h2>Add a device</h2>
+      <form method="post" action="/devices" class="add">
+        <input type="hidden" name="csrf" value="{{.CSRF}}">
+        <label>Name <input name="name" placeholder="mbp-laptop" required></label>
+        <label>OS
+          <select name="os">
+            <option value="linux">linux</option>
+            <option value="darwin">darwin (macOS)</option>
+          </select>
+        </label>
+        <button class="btn primary">Create</button>
+      </form>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
