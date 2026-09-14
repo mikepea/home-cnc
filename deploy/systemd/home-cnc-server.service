@@ -1,0 +1,17 @@
+[Unit]
+Description=home-cnc control plane
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# Bind to localhost only; Caddy terminates TLS and reverse-proxies to it.
+ExecStart=/usr/local/bin/cnc-server -addr 127.0.0.1:8080 -data /var/lib/home-cnc
+# CNC_ADMIN_USER / CNC_ADMIN_PASSWORD (first-run bootstrap) go here:
+EnvironmentFile=-/etc/home-cnc/server.env
+DynamicUser=yes
+StateDirectory=home-cnc
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

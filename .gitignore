@@ -1,0 +1,15 @@
+# Build output
+/bin/
+/dist/
+
+# Runtime data (database + signing key live here — never commit)
+/data/
+*.db
+*.db-wal
+*.db-shm
+signing.key
+signing.pub
+
+# Local env / secrets
+*.env
+agent.json

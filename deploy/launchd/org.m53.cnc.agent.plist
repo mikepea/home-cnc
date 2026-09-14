@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Install to /Library/LaunchDaemons/org.m53.cnc.agent.plist (owner root:wheel, 0644).
+  Runs as root so it can `shutdown -h now`; screen lock is dispatched into the
+  logged-in user's GUI session via `launchctl asuser` (see internal/agent/exec_darwin.go).
+    sudo launchctl bootstrap system /Library/LaunchDaemons/org.m53.cnc.agent.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>org.m53.cnc.agent</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/cnc-agent</string>
+        <string>-config</string>
+        <string>/etc/home-cnc/agent.json</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/var/log/cnc-agent.log</string>
+    <key>StandardErrorPath</key>
+    <string>/var/log/cnc-agent.log</string>
+</dict>
+</plist>

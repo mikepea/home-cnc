@@ -1,0 +1,6 @@
+# Automatic HTTPS via Let's Encrypt. Point cnc.m53.org's A/AAAA records at this
+# host, then: caddy run --config ./Caddyfile
+cnc.m53.org {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8080
+}
